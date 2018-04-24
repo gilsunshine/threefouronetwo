@@ -18,10 +18,10 @@ export default canvas => {
   let controls = new OrbitControls( camera )
   camera.position.z = 10;
 
-  // Configure renderer clear color
+  // Set renderer clear color
   renderer.setClearColor("#000");
 
-  // Configure renderer size
+  // Set renderer size and resize
   renderer.setSize( window.innerWidth, window.innerHeight );
   window.addEventListener('resize', ()=>{
     renderer.setSize( window.innerWidth, window.innerHeight );
@@ -62,7 +62,24 @@ export default canvas => {
   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
   scene.add( sphere );
 
-  let clock = new THREE.Clock({autoStart: true})
+  //Creating dummy spheres
+  let spheres = []
+  for(let i = 0; i < 5; i++){
+    let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+    let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+    let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    spheres.push(sphere)
+    scene.add( sphere );
+  }
+
+  let zSpot = 0.0625
+  let xSpot = 0.02127659574
+  spheres[0].position.set(xSpot * 24, xSpot * 10, zSpot * 4)
+  spheres[1].position.set(xSpot * 12, xSpot * 2, zSpot * 5)
+  spheres[2].position.set(xSpot * -12, xSpot * -20, zSpot * -2)
+  spheres[3].position.set(xSpot * 16, xSpot * -12 , zSpot * -4)
+  spheres[4].position.set(xSpot * 4, xSpot * 8, zSpot * 8)
+
 
   //creating and adding lighting
   let lights = [];
@@ -71,12 +88,12 @@ export default canvas => {
     lights.push(light)
   }
 
-  lights[ 0 ].position.set( 0, 0, 2 );
-  lights[ 1 ].position.set( 0, 0, -2 );
-  lights[ 2 ].position.set( 0, 2, 0 );
-  lights[ 3 ].position.set( 0, -2, 0 );
-  lights[ 4 ].position.set( 2, 0, 0 );
-  lights[ 5 ].position.set( -2, 0, 0 );
+  lights[ 0 ].position.set( 0, 0, 1 );
+  lights[ 1 ].position.set( 0, 0, -1 );
+  lights[ 2 ].position.set( 0, 1, 0 );
+  lights[ 3 ].position.set( 0, -1, 0 );
+  lights[ 4 ].position.set( 1, 0, 0 );
+  lights[ 5 ].position.set( -1, 0, 0 );
 
   lights.forEach(light => {
     scene.add(light)
@@ -134,6 +151,14 @@ export default canvas => {
       zed = 0
     }
     mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
+
+    spheres.forEach(sphere => {
+      if(sphere.position.z + 0.5 === plane.position.z){
+        mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
+        let newSound = new Sound(context)
+        newSound.play(notes[mappedX.toString()], context.currentTime)
+      }
+    })
 
     if(sphere.position.z + 0.5 === plane.position.z){
       let newSound = new Sound(context)
