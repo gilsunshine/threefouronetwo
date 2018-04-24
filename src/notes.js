@@ -50,3 +50,5 @@ let notes =
   '47': 987.767,
   '48': 1046.502
 }
+
+export default notes

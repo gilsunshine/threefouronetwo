@@ -1,5 +1,4 @@
 //**********************SOUNDS**************************//
-
 class Sound {
 
   constructor(context) {
@@ -32,3 +31,5 @@ class Sound {
   }
 
 }
+
+export default Sound
