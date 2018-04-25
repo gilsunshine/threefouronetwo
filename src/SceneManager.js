@@ -30,6 +30,62 @@ export default canvas => {
     camera.updateProjectionMatrix()
   })
 
+  const connection = new WebSocket('ws://localhost:5000')
+
+  connection.addEventListener('open', () => {
+    console.log('connected')
+    send(JSON.stringify(sphereObj()))
+  })
+
+  function send(data) {
+    if(connection.readyState === 1){
+      connection.send(data)
+    } else {
+      throw 'Not connected!'
+    }
+  }
+
+  connection.addEventListener('close', (data) => {
+    send(JSON.stringify(sphereObj()))
+    removeSphere(JSON.parse(data.data))
+  })
+
+  connection.addEventListener('message', (data) => {
+    console.log(spheres)
+    if(getSphere(JSON.parse(data.data))){
+      updateSphere(JSON.parse(data.data))
+    }else{
+      addSphere(JSON.parse(data.data))
+      send(JSON.stringify(sphereObj()))
+    }
+  })
+
+  let addSphere = (data) => {
+    let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+    let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+    let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    sphere.name = data.name
+    scene.add(sphere)
+    spheres.push(sphere)
+  }
+
+  let removeSphere = (data) => {
+    console.log('removing sphere')
+    let sphere = scene.getObjectByName(data.name)
+    let index = spheres.indexOf(sphere)
+    spheres.splice(index, 1)
+  }
+
+  let updateSphere = (data) => {
+    let sphere = scene.getObjectByName(data.name)
+    sphere.position.set(data.x, data.y, data.z)
+  }
+
+  let getSphere = (data) => {
+    let sphere = scene.getObjectByName(data.name)
+    return sphere ? true : false
+  }
+
   //creating materials
   let materials = []
   materials[0] = new THREE.MeshLambertMaterial({color: "#fff", transparent: true, opacity: 0.1, side: THREE.FrontSide})
@@ -68,43 +124,6 @@ export default canvas => {
   //Creating dummy spheres
   let spheres = []
   spheres.push(sphere)
-  // for(let i = 0; i < 5; i++){
-  //   let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
-  //   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
-  //   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-  //   spheres.push(sphere)
-  //   scene.add( sphere );
-  // }
-  //
-  // let zSpot = 0.0625
-  // let xSpot = 0.02127659574
-  // spheres[0].position.set(xSpot * 24, xSpot * 10, zSpot * 4)
-  // spheres[1].position.set(xSpot * 12, xSpot * 2, zSpot * 5)
-  // spheres[2].position.set(xSpot * -7, xSpot * -20, zSpot * -2)
-  // spheres[3].position.set(xSpot * 16, xSpot * -12 , zSpot * -4)
-  // spheres[4].position.set(xSpot * 4, xSpot * 8, zSpot * 8)
-
-  let addSphere = (data) => {
-    let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
-    // sphereGeometry.translate(0.0, 0.0, 0.0)
-    let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
-    let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-    console.log(sphere)
-    sphere.name = data.name
-    setTimeout(scene.add(sphere), 0, 20)
-    spheres.push(sphere)
-    console.log(scene)
-  }
-
-  let updateSphere = (data) => {
-    let sphere = scene.getObjectByName(data.name)
-    sphere.position.set(data.x, data.y, data.z)
-  }
-
-  let getSphere = (data) => {
-    let sphere = scene.getObjectByName(data.name)
-    return sphere ? true : false
-  }
 
   //creating and adding lighting
   let lights = [];
@@ -128,31 +147,43 @@ export default canvas => {
   let xSpeed = 0.02127659574
   let ySpeed = 0.02127659574
   let zSpeed = 0.0625;
+
   document.addEventListener("keydown", onDocumentKeyDown, false)
   function onDocumentKeyDown(event) {
     let keyCode = event.which
     if (keyCode === 87 && sphere.position.y < 0.5) {
       sphere.translateY(ySpeed)
+      send(JSON.stringify(sphereObj()))
     } else if (keyCode === 83 && sphere.position.y > -0.5) {
       sphere.translateY(-ySpeed)
+      send(JSON.stringify(sphereObj()))
     } else if (keyCode === 65 && sphere.position.x > -0.5) {
       sphere.translateX(-xSpeed)
+      send(JSON.stringify(sphereObj()))
     } else if (keyCode === 68 && sphere.position.x < 0.5) {
       sphere.translateX(xSpeed)
+      send(JSON.stringify(sphereObj()))
     } else if (keyCode === 90 && sphere.position.z < 0.5) {
       sphere.translateZ(zSpeed)
+      send(JSON.stringify(sphereObj()))
     }else if (keyCode === 88 && sphere.position.z > -0.5) {
       sphere.translateZ(-zSpeed)
+      send(JSON.stringify(sphereObj()))
     }else if (keyCode === 32) {
       sphere.translate(0, 0, 0)
+      send(JSON.stringify(sphereObj()))
     }else if(sphere.position.y > 0.5){
       sphere.position.y = 0.5
+      send(JSON.stringify(sphereObj()))
     }else if(sphere.position.y < -0.5){
       sphere.position.y = -0.5
+      send(JSON.stringify(sphereObj()))
     }else if(sphere.position.x > 0.5){
       sphere.position.x = 0.5
+      send(JSON.stringify(sphereObj()))
     }else if(sphere.position.x < -0.5){
       sphere.position.x = -0.5
+      send(JSON.stringify(sphereObj()))
     }
   }
 
@@ -177,9 +208,6 @@ export default canvas => {
       plane.position.set(0.0, 0.0, 0.0625)
       zed = 0
     }
-    // mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
-    // mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 400)
-    // howLong = mapNote(sphere.position.y, -0.5, 0.5, 0.75, 2)
 
     spheres.forEach(sphere => {
       if(sphere.position.z + 0.5 === plane.position.z){
@@ -190,11 +218,6 @@ export default canvas => {
         newSound.play(notes[mappedX.toString()], context.currentTime, howLong, mappedDistortion)
       }
     })
-
-    // if(sphere.position.z + 0.5 === plane.position.z){
-    //   let newSound = new Sound(context)
-    //   newSound.play(notes[mappedX.toString()], context.currentTime, howLong, mappedDistortion)
-    // }
 
     planes.translateZ(-0.5)
     renderer.render(scene, camera);
@@ -217,6 +240,7 @@ export default canvas => {
       sphereObj,
       addSphere,
       updateSphere,
-      getSphere
+      getSphere,
+      send
     }
 }

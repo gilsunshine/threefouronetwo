@@ -10,7 +10,6 @@ function broadcast(data){
 }
 
 server.on('connection', ws => {
-  console.log('hello')
   ws.on('message', data => {
     broadcast(data)
   })
