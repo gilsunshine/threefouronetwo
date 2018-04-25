@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/gilsunshine/.nvm/versions/node/v6.11.2/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js add express
+  /Users/gilsunshine/.nvm/versions/node/v6.11.2/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js start
 
 PATH: 
   /Library/Frameworks/Python.framework/Versions/2.7/bin:/Users/gilsunshine/anaconda2/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Users/gilsunshine/.nvm/versions/node/v6.11.2/bin:/Users/gilsunshine/.rvm/gems/ruby-2.3.3/bin:/Users/gilsunshine/.rvm/gems/ruby-2.3.3@global/bin:/Users/gilsunshine/.rvm/rubies/ruby-2.3.3/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/usr/local:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/gilsunshine/.rvm/bin
@@ -19,19 +19,21 @@ npm manifest:
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+      "express": "^4.16.3",
       "react": "^16.3.2",
       "react-dom": "^16.3.2",
       "react-scripts": "1.1.4",
       "three": "^0.92.0",
       "three-orbitcontrols": "^2.0.0",
+      "uuid": "^3.2.1",
       "ws": "^5.1.1"
     },
     "scripts": {
-      "start": "react-scripts start",
+      "start": "node server.js",
       "build": "react-scripts build",
       "test": "react-scripts test --env=jsdom",
       "eject": "react-scripts eject"
-    },
+    }
   }
 
 yarn manifest: 
@@ -2551,7 +2553,7 @@ Lockfile:
     dependencies:
       homedir-polyfill "^1.0.1"
   
-  express@^4.13.3:
+  express@^4.13.3, express@^4.16.3:
     version "4.16.3"
     resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
     dependencies:
@@ -7214,9 +7216,18 @@ Lockfile:
       window-size "0.1.0"
 
 Trace: 
-  SyntaxError: /Users/gilsunshine/dev/labs/mod-5/threee/package.json: Unexpected token } in JSON at position 423
-      at Object.parse (native)
-      at /usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:1036:59
-      at next (native)
-      at step (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:98:30)
-      at /usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:109:13
+  Error: Command failed.
+  Exit code: 1
+  Command: sh
+  Arguments: -c node server.js
+  Directory: /Users/gilsunshine/dev/labs/mod-5/threee
+  Output:
+  
+      at ProcessTermError.Error (native)
+      at ProcessTermError.MessageError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:186:110)
+      at new ProcessTermError (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:226:113)
+      at ChildProcess.<anonymous> (/usr/local/Cellar/yarn/1.5.1_1/libexec/lib/cli.js:30281:17)
+      at emitTwo (events.js:106:13)
+      at ChildProcess.emit (events.js:191:7)
+      at maybeClose (internal/child_process.js:891:16)
+      at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)

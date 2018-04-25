@@ -216,12 +216,16 @@ export default canvas => {
     controls.update()
     plane.translateZ(zedMove)
     zed += zedMove
-    if(zed >= 1){
-      plane.position.set(0.0, 0.0, 0.0625)
+    if(zed >= 1.0625){
+      plane.position.set(0.0, 0.0, 0.0)
       zed = 0
     }
 
     spheres.forEach(sphere => {
+      if(plane.position.z === 0){
+        console.log(plane.position.z)
+      }
+
       if(sphere.position.z + 0.5 === plane.position.z){
         mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
         mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 100)
