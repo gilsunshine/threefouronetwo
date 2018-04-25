@@ -1,52 +1,39 @@
-const WebSocket = require('ws')
-server = new WebSocket.Server({ port: 3000, headers: {
-  "Access-Control-Allow-Headers": "http://localhost:3000",
-}})
+var WebSocketServer = require('ws').Server
+const express = require('express');
+const uuidv4 = require('uuid/v4');
+const app = express();
+const path = require('path');
+const PORT = process.env.PORT || 5000
+const INDEX = path.join(__dirname, 'index.html');
 
-function broadcast(data){
-  server.clients.forEach(client => {
-    client.send(data)
-  })
-}
+const server = express()
+  .use((req, res) => res.sendFile(INDEX) )
+  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
-server.on('connection', ws => {
-  ws.on('message', data => {
-    broadcast(data)
+var wss = new WebSocketServer({server})
+
+let allConnections = []
+
+wss.on('connection', (ws, req) => {
+  const ip = req.connection.remoteAddress
+  console.log(`${ip} just made a WS connection`);
+  allConnections.push(ws)
+
+  ws.on('close', function close(){
+
+    let index = allConnections.indexOf(ws)
+    if (index > -1) {
+      allConnections.splice(index, 1);
+    }
   })
+
+  ws.on('message', (payload) => {
+    allConnections.forEach(client => {
+        if (client !== ws){
+          client.send(payload)
+        }
+      })
+    })
 })
 
-
-
-// const express = require('express');
-// const http = require('http');
-// const url = require('url');
-// const WebSocket = require('ws');
-//
-// const app = express();
-//
-// // app.use(function (req, res) {
-// //   res.send({ msg: "hello" });
-// // });
-//
-// app.use(express.static('public'));
-//
-// // const server = http.createServer(app);
-// // const wss = new WebSocket.Server({ server });
-//
-// const wss = new WebSocket.Server({ port: 8080 });
-//
-// wss.on('connection', function connection(ws, req) {
-//   console.log('hello world')
-//   const location = url.parse(req.url, true);
-//
-//   ws.on('message', function incoming(message) {
-//     console.log('received: %s', message);
-//   });
-//
-//   ws.send('something');
-// });
-//
-// server.listen(8080, function listening() {
-//   // console.log('Listening on %d', server.address().port);
-//   console.log("listening");
-// });
+console.log("LISTENING FOR WS CONNECTIONS ON PORT: ", PORT);
