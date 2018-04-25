@@ -30,7 +30,7 @@ export default canvas => {
     camera.updateProjectionMatrix()
   })
 
-  let HOST = location.origin.replace(/^http/, 'ws')
+  let HOST = location.origin.replace('https://rocky-stream-93260.herokuapp.com/')
   const connection = new WebSocket(HOST)
 
   connection.addEventListener('open', () => {
