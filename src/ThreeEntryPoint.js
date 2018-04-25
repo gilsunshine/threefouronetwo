@@ -13,9 +13,8 @@ export default containerElement => {
   }
 
   function render() {
-    requestAnimationFrame(render)
-    sceneManager.renderUpdate()
+    sceneManager.render()
   }
-  render()
 
+  render()
 }

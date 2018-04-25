@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import Sound from './sound.js'
 import notes from './notes.js'
 import OrbitControls from 'three-orbitcontrols'
+import uuidv4 from 'uuid/v4'
 
 export default canvas => {
 
@@ -56,30 +57,54 @@ export default canvas => {
   scene.add( plane );
 
   //Creating sphere
+  let sphereColor = 0x0000ff
   let sphereGeometry = new THREE.SphereGeometry( 0.05, 32, 32 );
-  sphereGeometry.translate(0.0, 0.0, 0.0)
+  // sphereGeometry.translate(0.0, 0.0, 0.0)
   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+  sphere.name = uuidv4()
   scene.add( sphere );
 
   //Creating dummy spheres
   let spheres = []
-  for(let i = 0; i < 5; i++){
+  spheres.push(sphere)
+  // for(let i = 0; i < 5; i++){
+  //   let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+  //   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
+  //   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+  //   spheres.push(sphere)
+  //   scene.add( sphere );
+  // }
+  //
+  // let zSpot = 0.0625
+  // let xSpot = 0.02127659574
+  // spheres[0].position.set(xSpot * 24, xSpot * 10, zSpot * 4)
+  // spheres[1].position.set(xSpot * 12, xSpot * 2, zSpot * 5)
+  // spheres[2].position.set(xSpot * -7, xSpot * -20, zSpot * -2)
+  // spheres[3].position.set(xSpot * 16, xSpot * -12 , zSpot * -4)
+  // spheres[4].position.set(xSpot * 4, xSpot * 8, zSpot * 8)
+
+  let addSphere = (data) => {
     let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+    // sphereGeometry.translate(0.0, 0.0, 0.0)
     let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
     let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+    console.log(sphere)
+    sphere.name = data.name
+    setTimeout(scene.add(sphere), 0, 20)
     spheres.push(sphere)
-    scene.add( sphere );
+    console.log(scene)
   }
 
-  let zSpot = 0.0625
-  let xSpot = 0.02127659574
-  spheres[0].position.set(xSpot * 24, xSpot * 10, zSpot * 4)
-  spheres[1].position.set(xSpot * 12, xSpot * 2, zSpot * 5)
-  spheres[2].position.set(xSpot * -12, xSpot * -20, zSpot * -2)
-  spheres[3].position.set(xSpot * 16, xSpot * -12 , zSpot * -4)
-  spheres[4].position.set(xSpot * 4, xSpot * 8, zSpot * 8)
+  let updateSphere = (data) => {
+    let sphere = scene.getObjectByName(data.name)
+    sphere.position.set(data.x, data.y, data.z)
+  }
 
+  let getSphere = (data) => {
+    let sphere = scene.getObjectByName(data.name)
+    return sphere ? true : false
+  }
 
   //creating and adding lighting
   let lights = [];
@@ -139,40 +164,59 @@ export default canvas => {
   let zed = 0
   let zedMove = 0.0625/8
   let mappedX
+  let mappedDistortion
+  let howLong
   let context = new (window.AudioContext || window.webkitAudioContext)()
 
-  let renderUpdate = function () {
+  let render = function () {
+    requestAnimationFrame(render)
     controls.update()
-
     plane.translateZ(zedMove)
     zed += zedMove
     if(zed >= 1){
       plane.position.set(0.0, 0.0, 0.0625)
       zed = 0
     }
-    mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
+    // mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
+    // mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 400)
+    // howLong = mapNote(sphere.position.y, -0.5, 0.5, 0.75, 2)
 
     spheres.forEach(sphere => {
       if(sphere.position.z + 0.5 === plane.position.z){
         mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
+        mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 100)
+        howLong = mapNote(sphere.position.y, -0.5, 0.5, 0, 1)
         let newSound = new Sound(context)
-        newSound.play(notes[mappedX.toString()], context.currentTime)
+        newSound.play(notes[mappedX.toString()], context.currentTime, howLong, mappedDistortion)
       }
     })
 
-    if(sphere.position.z + 0.5 === plane.position.z){
-      let newSound = new Sound(context)
-      console.log(mappedX.toString())
-      console.log(sphere.position.x)
-      newSound.play(notes[mappedX.toString()], context.currentTime)
-    }
+    // if(sphere.position.z + 0.5 === plane.position.z){
+    //   let newSound = new Sound(context)
+    //   newSound.play(notes[mappedX.toString()], context.currentTime, howLong, mappedDistortion)
+    // }
 
     planes.translateZ(-0.5)
     renderer.render(scene, camera);
     planes.translateZ(0.5)
   };
 
+
+  let sphereObj = function(){
     return {
-      renderUpdate
+      x: sphere.position.x,
+      y: sphere.position.y,
+      z: sphere.position.z,
+      color: sphereColor,
+      name: sphere.name
+    }
+  }
+
+    return {
+      render,
+      sphereObj,
+      addSphere,
+      updateSphere,
+      getSphere
     }
 }
