@@ -45,18 +45,28 @@ export default canvas => {
     }
   }
 
-  connection.addEventListener('close', (data) => {
-    send(JSON.stringify(sphereObj()))
-    removeSphere(JSON.parse(data.data))
-  })
+  // connection.addEventListener('close', (data) => {
+  //   removeSphere(JSON.parse(data.data))
+  // })
+
+  window.onbeforeunload = function(){
+    let sphere = sphereObj()
+    sphere.remove = true
+    send(JSON.stringify(sphere))
+  }
 
   connection.addEventListener('message', (data) => {
-    console.log(spheres)
-    if(getSphere(JSON.parse(data.data))){
-      updateSphere(JSON.parse(data.data))
-    }else{
-      addSphere(JSON.parse(data.data))
-      send(JSON.stringify(sphereObj()))
+    let newData = JSON.parse(data.data)
+    if(!newData.remove){
+      if(getSphere(JSON.parse(data.data))){
+        updateSphere(JSON.parse(data.data))
+      }else{
+        addSphere(JSON.parse(data.data))
+        updateSphere(JSON.parse(data.data))
+        send(JSON.stringify(sphereObj()))
+      }
+    } else {
+      removeSphere(JSON.parse(data.data))
     }
   })
 
@@ -70,10 +80,12 @@ export default canvas => {
   }
 
   let removeSphere = (data) => {
+    console.log(spheres)
     console.log('removing sphere')
     let sphere = scene.getObjectByName(data.name)
     let index = spheres.indexOf(sphere)
     spheres.splice(index, 1)
+    scene.remove(sphere)
   }
 
   let updateSphere = (data) => {
@@ -213,7 +225,7 @@ export default canvas => {
       if(sphere.position.z + 0.5 === plane.position.z){
         mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
         mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 100)
-        howLong = mapNote(sphere.position.y, -0.5, 0.5, 0, 1)
+        howLong = mapNote(sphere.position.y, -0.5, 0.5, 0.2, 1)
         let newSound = new Sound(context)
         newSound.play(notes[mappedX.toString()], context.currentTime, howLong, mappedDistortion)
       }
@@ -231,7 +243,8 @@ export default canvas => {
       y: sphere.position.y,
       z: sphere.position.z,
       color: sphereColor,
-      name: sphere.name
+      name: sphere.name,
+      remove: false
     }
   }
 
