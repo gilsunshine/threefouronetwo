@@ -10,6 +10,7 @@ export default canvas => {
 
   // Create a basic perspective camera
   let camera = new THREE.PerspectiveCamera( 15, window.innerWidth/window.innerHeight, 0.1, 1000 );
+  camera.position.z = 10;
 
   // Create a renderer with Antialiasing
   //This is where the canvas that is passed in gets used
@@ -17,7 +18,6 @@ export default canvas => {
 
   //Create orbit controls for camera
   let controls = new OrbitControls( camera )
-  camera.position.z = 10;
 
   // Set renderer clear color
   renderer.setClearColor("#000");
@@ -81,7 +81,6 @@ export default canvas => {
   }
 
   let removeSphere = (data) => {
-    console.log(spheres)
     console.log('removing sphere')
     let sphere = scene.getObjectByName(data.name)
     let index = spheres.indexOf(sphere)
@@ -121,7 +120,7 @@ export default canvas => {
   //creating counting plane
   let planeGeometry = new THREE.PlaneGeometry( 1, 1 );
   planeGeometry.translate(0.0, 0.0, -0.5625)
-  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide, wireframe: true} );
   let plane = new THREE.Mesh( planeGeometry, planeMaterial );
   scene.add( plane );
 
@@ -223,9 +222,6 @@ export default canvas => {
     }
 
     spheres.forEach(sphere => {
-      if(plane.position.z === 0){
-        console.log(plane.position.z)
-      }
 
       if(sphere.position.z + 0.5 === plane.position.z){
         mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
