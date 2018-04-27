@@ -33,7 +33,7 @@ export default canvas => {
    // var HOST = location.origin.replace(/^http/, 'ws')
   // const connection = new WebSocket('ws://localhost:5000')
 
-  var host = location.origin.replace(/^http/, 'ws')
+  var host = window.location.origin.replace(/^http/, 'ws')
   var connection = new WebSocket(host);
 
   connection.addEventListener('open', () => {
