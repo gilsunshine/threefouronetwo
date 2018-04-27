@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "concurrently": "^3.5.1",
     "express": "^4.16.3",
     "http": "0.0.0",
     "react": "^16.3.2",
@@ -18,8 +19,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start":
-      "concurrently \"react-scripts start\" \"node server/server.js\"",
+    "start": "concurrently \"react-scripts start\" \"node server/server.js\"",
     "server": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
