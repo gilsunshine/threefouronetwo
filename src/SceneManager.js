@@ -30,9 +30,6 @@ export default canvas => {
     camera.updateProjectionMatrix()
   })
 
-   // var HOST = location.origin.replace(/^http/, 'ws')
-  // const connection = new WebSocket('ws://localhost:5000')
-
   var host = window.location.origin.replace(/^http/, 'ws')
   var connection = new WebSocket(host);
 
