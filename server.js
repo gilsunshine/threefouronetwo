@@ -6,8 +6,10 @@ const app = express();
 const path = require('path');
 const PORT = process.env.PORT || 5000
 const INDEX = path.join(__dirname, './public/index.html');
+const BUILD = path.join(__dirname, './build');
 
-app.use(express.static(__dirname + "public"))
+// app.use(express.static(__dirname + "/"))
+app.use(express.static(BUILD))
 
 var server = http.createServer(app)
 server.listen(PORT)
