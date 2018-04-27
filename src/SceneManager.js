@@ -31,7 +31,10 @@ export default canvas => {
   })
 
    // var HOST = location.origin.replace(/^http/, 'ws')
-  const connection = new WebSocket('ws://localhost:5000')
+  // const connection = new WebSocket('ws://localhost:5000')
+
+  var host = location.origin.replace(/^http/, 'ws')
+  var ws = new WebSocket(host);
 
   connection.addEventListener('open', () => {
     console.log('connected')
@@ -45,10 +48,6 @@ export default canvas => {
       throw 'Not connected!'
     }
   }
-
-  // connection.addEventListener('close', (data) => {
-  //   removeSphere(JSON.parse(data.data))
-  // })
 
   window.onbeforeunload = function(){
     let sphere = sphereObj()
@@ -144,7 +143,7 @@ export default canvas => {
 
   //Creating sphere
   let sphereColor = 0x0000ff
-  let sphereGeometry = new THREE.SphereGeometry( 0.04, 32, 32 );
+  let sphereGeometry = new THREE.SphereGeometry( 0.03, 32, 32 );
   // sphereGeometry.translate(0.0, 0.0, 0.0)
   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );

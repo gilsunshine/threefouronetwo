@@ -1,4 +1,5 @@
 var WebSocketServer = require('ws').Server
+var http = require("http")
 const express = require('express');
 const uuidv4 = require('uuid/v4');
 const app = express();
@@ -6,11 +7,17 @@ const path = require('path');
 const PORT = process.env.PORT || 5000
 const INDEX = path.join(__dirname, './public/index.html');
 
-const server = express()
-  .use((req, res) => res.sendFile(INDEX) )
-  .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+app.use(express.static(__dirname + "/"))
 
-var wss = new WebSocketServer({server})
+var server = http.createServer(app)
+server.listen(PORT)
+
+// const server = express()
+//   .use((req, res) => res.sendFile(INDEX) )
+//   .listen(PORT, () => console.log(`Listening on ${ PORT }`));
+
+// var wss = new WebSocketServer({server})
+var wss = new WebSocketServer({server: server})
 
 let allConnections = []
 
