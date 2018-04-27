@@ -72,7 +72,7 @@ export default canvas => {
   })
 
   let addSphere = (data) => {
-    let sphereGeometry = new THREE.SphereGeometry( 0.025, 32, 32 );
+    let sphereGeometry = new THREE.SphereGeometry( 0.0025, 32, 32 );
     let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
     let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
     sphere.name = data.name
@@ -120,13 +120,31 @@ export default canvas => {
   //creating counting plane
   let planeGeometry = new THREE.PlaneGeometry( 1, 1 );
   planeGeometry.translate(0.0, 0.0, -0.5625)
-  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide, transparent: true, opacity: 0} );
   let plane = new THREE.Mesh( planeGeometry, planeMaterial );
   scene.add( plane );
 
+  let grid = new THREE.Group()
+  let spacing = 0
+  for(let i = 0; i < 49; i++){
+    let material = new THREE.LineBasicMaterial( { color: 0xffff00 } );
+    let geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3( spacing - 0.5, -0.5, -0.5625) );
+    geometry.vertices.push(new THREE.Vector3( spacing - 0.5, 0.5, -0.5625) );
+    let geometry1 = new THREE.Geometry();
+    geometry1.vertices.push(new THREE.Vector3(-0.5, spacing - 0.5, -0.5625) );
+    geometry1.vertices.push(new THREE.Vector3(0.5, spacing - 0.5, -0.5625) );
+    spacing += 1/48
+    let line = new THREE.Line(geometry, material)
+    let line1 = new THREE.Line(geometry1, material)
+    grid.add(line)
+    grid.add(line1)
+  }
+  scene.add(grid)
+
   //Creating sphere
   let sphereColor = 0x0000ff
-  let sphereGeometry = new THREE.SphereGeometry( 0.05, 32, 32 );
+  let sphereGeometry = new THREE.SphereGeometry( 0.03, 32, 32 );
   // sphereGeometry.translate(0.0, 0.0, 0.0)
   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
@@ -214,9 +232,11 @@ export default canvas => {
   let render = function () {
     requestAnimationFrame(render)
     controls.update()
+    grid.translateZ(zedMove)
     plane.translateZ(zedMove)
     zed += zedMove
     if(zed >= 1.0625){
+      grid.position.set(0.0, 0.0, 0.0)
       plane.position.set(0.0, 0.0, 0.0)
       zed = 0
     }
