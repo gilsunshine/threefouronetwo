@@ -72,7 +72,7 @@ export default canvas => {
   })
 
   let addSphere = (data) => {
-    let sphereGeometry = new THREE.SphereGeometry( 0.0025, 32, 32 );
+    let sphereGeometry = new THREE.SphereGeometry( 0.02, 32, 32 );
     let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0xff0000, side: THREE.DoubleSide} );
     let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
     sphere.name = data.name
@@ -106,7 +106,7 @@ export default canvas => {
   //creating plane geometries
   let translation = 0
   let planes = new THREE.Group()
-  for(let i = 0; i <= 16; i++){
+  for(let i = 0; i <= 15; i++){
     let plane = new THREE.BoxGeometry( 1, 1, 0.001 );
     plane.translate(0.0, 0.0, translation)
     translation += 0.0625
@@ -144,7 +144,7 @@ export default canvas => {
 
   //Creating sphere
   let sphereColor = 0x0000ff
-  let sphereGeometry = new THREE.SphereGeometry( 0.03, 32, 32 );
+  let sphereGeometry = new THREE.SphereGeometry( 0.04, 32, 32 );
   // sphereGeometry.translate(0.0, 0.0, 0.0)
   let sphereMaterial = new THREE.MeshLambertMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
   let sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
@@ -193,7 +193,7 @@ export default canvas => {
     } else if (keyCode === 68 && sphere.position.x < 0.5) {
       sphere.translateX(xSpeed)
       send(JSON.stringify(sphereObj()))
-    } else if (keyCode === 90 && sphere.position.z < 0.5) {
+    } else if (keyCode === 90 && sphere.position.z < 0.4375) {
       sphere.translateZ(zSpeed)
       send(JSON.stringify(sphereObj()))
     }else if (keyCode === 88 && sphere.position.z > -0.5) {
@@ -235,7 +235,7 @@ export default canvas => {
     grid.translateZ(zedMove)
     plane.translateZ(zedMove)
     zed += zedMove
-    if(zed >= 1.0625){
+    if(zed >= 1){
       grid.position.set(0.0, 0.0, 0.0)
       plane.position.set(0.0, 0.0, 0.0)
       zed = 0
@@ -243,7 +243,7 @@ export default canvas => {
 
     spheres.forEach(sphere => {
 
-      if(sphere.position.z + 0.5 === plane.position.z){
+      if(sphere.position.z + 0.5 + zedMove + zedMove + zedMove === plane.position.z){
         mappedX = Math.floor(mapNote(sphere.position.x, -0.5, 0.5, 0, 48))
         mappedDistortion = mapNote(sphere.position.y, -0.5, 0.5, 0, 100)
         howLong = mapNote(sphere.position.y, -0.5, 0.5, 0.2, 1)
