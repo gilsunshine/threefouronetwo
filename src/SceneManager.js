@@ -120,7 +120,7 @@ export default canvas => {
   //creating counting plane
   let planeGeometry = new THREE.PlaneGeometry( 1, 1 );
   planeGeometry.translate(0.0, 0.0, -0.5625)
-  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide, wireframe: true} );
+  let planeMaterial = new THREE.MeshLambertMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
   let plane = new THREE.Mesh( planeGeometry, planeMaterial );
   scene.add( plane );
 
