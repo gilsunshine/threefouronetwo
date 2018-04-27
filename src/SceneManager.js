@@ -34,7 +34,7 @@ export default canvas => {
   // const connection = new WebSocket('ws://localhost:5000')
 
   var host = location.origin.replace(/^http/, 'ws')
-  var ws = new WebSocket(host);
+  var connection = new WebSocket(host);
 
   connection.addEventListener('open', () => {
     console.log('connected')
