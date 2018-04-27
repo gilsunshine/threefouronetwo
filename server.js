@@ -7,7 +7,7 @@ const path = require('path');
 const PORT = process.env.PORT || 5000
 const INDEX = path.join(__dirname, './public/index.html');
 
-app.use(express.static(__dirname + "/"))
+app.use(express.static(__dirname + "public"))
 
 var server = http.createServer(app)
 server.listen(PORT)
