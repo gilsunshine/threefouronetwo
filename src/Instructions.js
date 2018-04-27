@@ -40,7 +40,7 @@ let divStyle = {
   position: "absolute",
   margin: "2%",
   padding: "1%",
-  backgroundColor: '#ddd',
+  backgroundColor: '#eee',
   zIndex: 10,
   width: "15%"
 }
