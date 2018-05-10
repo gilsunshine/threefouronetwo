@@ -20,12 +20,16 @@ wss.on('connection', (ws, req) => {
   const ip = req.connection.remoteAddress
   console.log(`${ip} just made a WS connection`);
   allConnections.push(ws)
+  var id = setInterval(function() {
+  ws.send(JSON.stringify(new Date()), function() {  })
+    }, 1000)
 
   ws.on('close', function close(){
     let index = allConnections.indexOf(ws)
     if (index > -1) {
       allConnections.splice(index, 1);
     }
+    clearInterval(id)
   })
 
   ws.on('message', (payload) => {
