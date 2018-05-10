@@ -36,6 +36,7 @@ export default canvas => {
   connection.addEventListener('open', () => {
     console.log('connected')
     send(JSON.stringify(sphereObj()))
+    setInterval(function(){ send("Hello") }, 3000)
   })
 
   function send(data) {
