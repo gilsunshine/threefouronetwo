@@ -24,7 +24,7 @@ wss.on('connection', (ws, req) => {
   ws.send(JSON.stringify(new Date()), function() {  })
     }, 1000)
 
-  ws.on('close', function close(){
+  wss.on('close', function close(){
     let index = allConnections.indexOf(ws)
     if (index > -1) {
       allConnections.splice(index, 1);
@@ -32,7 +32,7 @@ wss.on('connection', (ws, req) => {
     clearInterval(id)
   })
 
-  ws.on('message', (payload) => {
+  wss.on('message', (payload) => {
     allConnections.forEach(client => {
       if (client !== ws){
         client.send(payload)
