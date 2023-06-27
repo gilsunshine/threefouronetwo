@@ -12,7 +12,7 @@ app.use(express.static(BUILD))
 let server = http.createServer(app)
 server.listen(PORT)
 
-let wss = new WebSocketServer({port: PORT})
+let wss = new WebSocketServer({server: server})
 
 let allConnections = []
 
