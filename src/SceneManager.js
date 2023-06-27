@@ -31,7 +31,7 @@ export default canvas => {
   })
 
   var host = window.location.origin.replace(/^http/, 'ws')
-  var connection = new WebSocket('wss://threefouronetwo.onrender.com');
+  var connection = new WebSocket('wss://threefouronetwo.onrender.com:5000');
 
   connection.addEventListener('open', () => {
     console.log('connected')
