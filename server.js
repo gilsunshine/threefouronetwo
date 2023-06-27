@@ -4,7 +4,7 @@ const express = require('express');
 const uuidv4 = require('uuid/v4');
 const app = express();
 const path = require('path');
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 3000
 const BUILD = path.join(__dirname, './build');
 
 app.use(express.static(BUILD))
@@ -12,7 +12,7 @@ app.use(express.static(BUILD))
 let server = http.createServer(app)
 server.listen(PORT)
 
-let wss = new WebSocketServer({server: server})
+let wss = new WebSocketServer({port: PORT})
 
 let allConnections = []
 
