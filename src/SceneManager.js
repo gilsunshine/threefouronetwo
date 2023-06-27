@@ -30,8 +30,8 @@ export default canvas => {
     camera.updateProjectionMatrix()
   })
 
-  var host = window.location.origin.replace(/^http/, 'ws')
-  var connection = new WebSocket('wss://threefouronetwo.onrender.com:5000');
+  // var host = window.location.origin.replace(/^http/, 'ws')
+  var connection = new WebSocket('wss://threefouronetwo.onrender.com');
 
   connection.addEventListener('open', () => {
     console.log('connected')
