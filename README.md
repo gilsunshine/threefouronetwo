@@ -1,4 +1,4 @@
-# Three Four One Two
+# ThreeFourOneTwo
 
 Visit the live application here: https://threefouronetwo.onrender.com/ Works best if you get some friends to click the link too ;).
 
